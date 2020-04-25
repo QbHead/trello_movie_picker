@@ -5,28 +5,25 @@ import random
 
 my_token=apikey.my_token
 my_key=apikey.my_key
+src_by_board_name=apikey.src_by_board_name
+src_by_table_name=apikey.src_by_table_name
 board_id=""
 table_id=""
 
-src_by_board_name="Moziverzum"
-src_by_table_name="Ajánlások (Nyetflix) aka. randomizer"
-
 def get_board_ids():
-    global board_id
     url = 'https://api.trello.com/1/members/me/boards?key='+my_key+'&token='+my_token
     json_data=run_get(url)
-    for y in range(0,len(json_data)):
-        if json_data[y]["name"]==src_by_board_name:
-            board_id = json_data[y]["id"]
-    return 0
+    return search_name(json_data,src_by_board_name)
 
 def get_list_ids():
-    global table_id
     url = 'https://api.trello.com/1/boards/'+ board_id +'/lists?key='+my_key+'&token='+my_token
     json_data=run_get(url)
-    for y in range(0,len(json_data)):
-        if json_data[y]["name"]==src_by_table_name:
-            table_id = json_data[y]["id"]
+    return search_name(json_data,src_by_table_name)
+
+def search_name(data,name):
+    for y in range(0,len(data)):
+        if data[y]["name"]==name:
+            return data[y]["id"]
     return 0
 
 def get_card_names():
@@ -35,21 +32,21 @@ def get_card_names():
     names=[]
     for y in range(0, len(cards)):
         names.append(cards[y]["name"])
-    randomize_names(names)
-
-def randomize_names(names):
-    rnd_num=random.randrange(0, len(names))
-    print(names[rnd_num])
+    random.shuffle(names)
+    print(names[0])
 
 def run_get(url):
     headers = {"Accept": "application/json"}
     response = requests.request("GET",url,headers=headers)
     # print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
     return json.loads(response.text)
-    
+
 def get_random_film():
-    get_board_ids()
-    get_list_ids()
+    global board_id
+    global table_id
+
+    board_id = get_board_ids()
+    table_id = get_list_ids()
     get_card_names()
     
 get_random_film()
