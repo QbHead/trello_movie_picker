@@ -28,8 +28,8 @@ def get_card_names(table_id):
     url = 'https://api.trello.com/1/lists/'+table_id+'/cards?key='+my_key+'&token='+my_token
     cards=run_get(url)
     names=[]
-    for y in range(0, len(cards)):
-        names.append(cards[y]["name"])
+    for card in cards:
+        names.append(card["name"])
     random.shuffle(names)
     print(names[0])
 
