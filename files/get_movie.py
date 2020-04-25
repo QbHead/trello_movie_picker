@@ -19,9 +19,9 @@ def get_list_ids(board_id):
     return search_name(json_data,src_by_table_name)
 
 def search_name(data,name):
-    for y in range(0,len(data)):
-        if data[y]["name"]==name:
-            return data[y]["id"]
+    for item in data:
+        if item["name"]==name:
+            return item["id"]
     return 0
 
 def get_card_names(table_id):
